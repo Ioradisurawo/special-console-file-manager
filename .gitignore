@@ -1,0 +1,30 @@
+
+OOP Filemanager/OOP Filemanager.vcxproj
+OOP Filemanager/OOP Filemanager.vcxproj.filters
+OOP Filemanager/OOP Filemanager.vcxproj.user
+OOP Filemanager/Release/additional_funcs.obj
+OOP Filemanager/Release/audio_player.obj
+OOP Filemanager/Release/filemanager_base.obj
+OOP Filemanager/Release/filemanager_console.obj
+OOP Filemanager/Release/filemanager_special.obj
+OOP Filemanager/Release/menu_coloured.obj
+OOP Filemanager/Release/menu_controller.obj
+OOP Filemanager/Release/menuController.obj
+OOP Filemanager/Release/menuItem_coloured.obj
+OOP Filemanager/Release/OOP Filemanager.exe.recipe
+OOP Filemanager/Release/OOP Filemanager.iobj
+OOP Filemanager/Release/OOP Filemanager.ipdb
+OOP Filemanager/Release/OOP Filemanager.log
+OOP Filemanager/Release/OOP Filemanager.tlog/CL.command.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/Cl.items.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/CL.read.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/CL.write.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/link.command.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/link.read.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/link.write.1.tlog
+OOP Filemanager/Release/OOP Filemanager.tlog/OOP Filemanager.lastbuildstate
+OOP Filemanager/Release/source.obj
+OOP Filemanager/Release/vc143.pdb
+Release/OOP Filemanager.exe
+Release/OOP Filemanager.pdb
+OOP Filemanager.sln
