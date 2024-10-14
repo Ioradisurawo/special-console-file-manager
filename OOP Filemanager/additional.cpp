@@ -1,6 +1,18 @@
 #include "additional_funcs.h"
 
+// Рандом
+std::mt19937 rng;
+std::mt19937::result_type const seedval = time(0);
+int	Random(const int& from, const int& to)
+{
+	std::uniform_int_distribution<std::mt19937::result_type> random(from, to);
 
+	return random(rng);
+}
+
+// Время
+
+// Файлы копия
 bool			CopyFileToString(const std::filesystem::path& file_path, std::string& string)
 {
 	std::ifstream file;

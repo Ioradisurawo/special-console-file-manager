@@ -5,9 +5,39 @@
 #include <fstream>
 #include <random>
 #include <ctime>
+#include <chrono>
 
+// Рандом
+int	Random(const int& from, const int& to);
 
+// Таймер
+class Timer {
+	std::chrono::steady_clock::time_point start, end;
+	std::chrono::milliseconds duration;
 
+public:
+	// Конструктор
+	Timer()
+	: start(std::chrono::steady_clock::now())
+	, end()
+	, duration()
+	{}
+	// 
+	bool ThresholdReached(const int& threshold_milisec)
+	{
+		end = std::chrono::steady_clock::now();
+		duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+		if (duration.count() > threshold_milisec)
+		{
+			start = std::chrono::steady_clock::now();
+			return true;
+		}
+		return false;
+	}
+};
+
+// Файлы копия
 bool CopyFileToString(const std::filesystem::path& file_path, std::string& string);
 bool CopyStringToFile(const std::filesystem::path& file_path, std::string& string);
 

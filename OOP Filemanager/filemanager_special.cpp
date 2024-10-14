@@ -1,15 +1,6 @@
 #include "filemanager_special.h"
 
-// Рандом
-typedef std::mt19937 rng_type;
-rng_type rng;
-rng_type::result_type const seedval = time(0);
-int				Random(const int& from, const int& to)
-{
-	std::uniform_int_distribution<rng_type::result_type> random(from, to);
 
-	return random(rng);
-}
 
 // Древность
 const int ScreenHeight = 120;
@@ -18,6 +9,8 @@ COORD charBufSize = { ScreenWidth, ScreenHeight };
 COORD characterPos = { 0, 0 };
 SMALL_RECT writeArea = { 0, 0, ScreenWidth, ScreenHeight };
 CHAR_INFO charInfo[ScreenWidth * ScreenHeight];
+
+
 
 // Управление и вывод изображения
 void SpecialFilemanager::clearConsole() {
@@ -48,96 +41,80 @@ void SpecialFilemanager::ParseControlAction()
 		current_control_code = ControlCode::RIGHT;
 	if (GetAsyncKeyState((unsigned short)'E') & 0x8000 || GetAsyncKeyState(VK_RETURN))
 		current_control_code = ControlCode::CONFIRM;
-	/*
-	if (GetAsyncKeyState(VK_ESCAPE))
-		current_control_code = ControlCode::DECLINE;
-	*/
 }
 void SpecialFilemanager::MenuAction()
 {
-	ControlCode empt = ControlCode::NONE;
 	switch (current_control_code)
 	{
-	case ControlCode::CONFIRM:
-	{
-		std::cout << "confirm";
-		current_menu->InvokeItem();
-		break;
-	}
-	case ControlCode::DECLINE:
-	{
-		std::cout << "decline";
-
-		if (previous_menu)
-			previous_menu();
-		break;
-	}
-	case ControlCode::UP:
-	{
-		std::cout << "up";
-
-		if (current_menu->IsVertical())
+		case ControlCode::CONFIRM:
 		{
-			if (current_index - 1 >= 0)
+			current_menu->InvokeItem();
+
+			break;
+		}
+		case ControlCode::DECLINE:
+		{
+			if (previous_menu)
+				previous_menu();
+
+			break;
+		}
+		case ControlCode::UP:
+		{
+			if (current_menu->IsVertical())
 			{
+				if (current_index - 1 >= 0)
+				{
+					current_menu->PreviousItem();
+					--current_index;
+					graphics_update_required = true;
+				}
+			}
+
+			audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
+			break;
+		}
+		case ControlCode::DOWN:
+		{
+			if (current_menu->IsVertical())
+			{
+				if (current_index + 1 < directories.size())
+				{
+					current_menu->NextItem();
+					++current_index;
+					graphics_update_required = true;
+				}
+			}
+
+			audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
+
+			break;
+		}
+		case ControlCode::LEFT:
+		{
+			if (!current_menu->IsVertical())
 				current_menu->PreviousItem();
-				--current_index;
-			}
+
+
+			PageLeft();
+			graphics_update_required = true;
+
+			break;
 		}
-
-		audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
-		break;
-	}
-	case ControlCode::DOWN:
-	{
-		std::cout << "down";
-
-		if (current_menu->IsVertical())
+		case ControlCode::RIGHT:
 		{
-			if (current_index + 1 < directories.size())
-			{
+			if (!current_menu->IsVertical())
 				current_menu->NextItem();
-				++current_index;
-			}
+
+			PageRight();
+			graphics_update_required = true;
+
+			break;
 		}
-
-		audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
-
-		break;
+		default:
+			break;
 	}
-	case ControlCode::LEFT:
-	{
-		std::cout << "left";
 
-		if (!current_menu->IsVertical())
-			current_menu->PreviousItem();
-
-
-		PageLeft();
-
-		break;
-	}
-	case ControlCode::RIGHT:
-	{
-		std::cout << "right";
-
-		if (!current_menu->IsVertical())
-			current_menu->NextItem();
-		PageRight();
-
-		break;
-	}
-	case ControlCode::ACTION:
-	{
-		std::cout << "act";
-		break;
-	}
-	default:
-	{
-		std::cout << "none";
-		break;
-	}
-	}
 	current_control_code = ControlCode::NONE;
 }
 
@@ -200,64 +177,64 @@ void SpecialFilemanager::Shutdown()
 // Entity
 void SpecialFilemanager::AmbienceCheck()
 {
-	if (!the_entity.is_active)
+	if (!entity.is_active)
 		return;
 
-	if (the_entity.proximity > 1)
+	if (entity.proximity > 1)
 		audio_player.PlayAmbientSFX(Audio::NONE);
-	else if (the_entity.proximity == 1)
+	else if (entity.proximity == 1)
 		audio_player.PlayAmbientSFX(Audio::AMB_NEAR);
-	else if (the_entity.proximity == 0)
+	else if (entity.proximity == 0)
 		audio_player.PlayAmbientSFX(Audio::AMB_PROX);
 }
 void SpecialFilemanager::EntityNavigateToDir()
 {
 	// обновление крайнего пути
-	the_entity.last_path = the_entity.path;
+	entity.last_path = entity.path;
 
-	std::filesystem::path move = std::filesystem::relative(selected_path, the_entity.path);
+	std::filesystem::path move = std::filesystem::relative(selected_path, entity.path);
 
 	// подсчёт насколько близок и определение следующего пути
-	the_entity.proximity = 1;
+	entity.proximity = 1;
 	while (move.parent_path() != "")
 	{
 		move = move.parent_path();
-		++the_entity.proximity;
+		++entity.proximity;
 	}
 
 	// проверка на действие
-	if (the_entity.counter >= the_entity.counter_limit)
+	if (entity.counter >= entity.counter_limit)
 	{
 		if (move != "..")
 		{
-			the_entity.path += "/";
-			the_entity.path += move;
+			entity.path += "/";
+			entity.path += move;
 		}
 		else
 		{
-			the_entity.path = the_entity.path.parent_path();
+			entity.path = entity.path.parent_path();
 		}
-		the_entity.counter = 0;
+		entity.counter = 0;
 	}
 	else
 	{
-		the_entity.counter += Random(0, the_entity.speed_mod);
+		entity.counter += Random(0, entity.speed_mod);
 	}
 
 }
 void SpecialFilemanager::EntityAct()
 {
-	if (!the_entity.is_active)
+	if (!entity.is_active)
 		return;
 
-	if (the_entity.index == current_index + (entries_per_page * current_page))
+	if (entity.index == current_index + (entries_per_page * current_page))
 		Shutdown();
 
 	// не в папке с пользователем
-	if (the_entity.path != selected_path)
+	if (entity.path != selected_path)
 	{
-		the_entity.index = -1;
-		the_entity.chase_mode = false;
+		entity.index = -1;
+		entity.chase_mode = false;
 
 		EntityNavigateToDir();
 
@@ -265,41 +242,41 @@ void SpecialFilemanager::EntityAct()
 	// в папке с пользователем
 	else
 	{
-		the_entity.proximity = 0;
+		entity.proximity = 0;
 		// уже преследует
-		if (the_entity.chase_mode)
+		if (entity.chase_mode)
 		{
-			if (the_entity.chase_counter >= the_entity.chase_counter_limit)
+			if (entity.chase_counter >= entity.chase_counter_limit)
 			{
-				if (the_entity.index > current_index + (entries_per_page * current_page))
-					--the_entity.index;
+				if (entity.index > current_index + (entries_per_page * current_page))
+					--entity.index;
 				else
-					++the_entity.index;
+					++entity.index;
 
 				//the_entity.index += current_index > the_entity.index ? 1 : -1;
 			}
 			else
 			{
-				the_entity.chase_counter += Random(0, the_entity.speed_mod);
+				entity.chase_counter += Random(0, entity.speed_mod);
 			}
-			directories.at(the_entity.index).replace_filename("???");
+			directories.at(entity.index).replace_filename("???");
 		}
 		// начало преследования в директории
 		else
 		{
-			the_entity.counter = 0;
-			the_entity.chase_mode = true;
+			entity.counter = 0;
+			entity.chase_mode = true;
 
 			int i = 0;
 			for (auto& entry : directories)
 			{
-				if (entry == the_entity.last_path)
+				if (entry == entity.last_path)
 					break;
 				++i;
 			}
-			the_entity.index = i - 1;
+			entity.index = i - 1;
 
-			the_entity.last_path = the_entity.path;
+			entity.last_path = entity.path;
 		}
 	}
 }
@@ -312,7 +289,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 	{
 		// Поиск одинаковой записи
 		bool found = false;
-		for (auto& gen : generated_filesNEW)
+		for (auto& gen : generated_files)
 		{
 			if (gen.path == path)
 				found = true;
@@ -328,7 +305,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 				++dir_size;
 
 			// спавн файла на случайной позиции от 0 до размера дир
-			generated_filesNEW.push_back(DirectoryData(path, 0, Random(0, dir_size - 1)));
+			generated_files.push_back(DirectoryData(path, 0, Random(0, dir_size - 1)));
 			return;
 		}
 	}
@@ -351,7 +328,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 }
 void SpecialFilemanager::GenerateFiles()
 {
-	while (generated_filesNEW.size() < 8)
+	while (generated_files.size() < 8)
 	{
 		RecursiveGeneration(0, 10, selected_path);
 	}
@@ -391,39 +368,6 @@ void SpecialFilemanager::ReloadDirs()
 
 
 // Взаимодействие
-void SpecialFilemanager::PreviousDir()
-{
-	// если можно вызвать меню действий (т.е. мы НЕ в меню действий)
-	if (std::filesystem::is_directory(selected_path))
-	{
-		// Если вне меню действий
-		if (action_allowed)
-		{
-			current_page = directory_history.top().page;
-			current_index = directory_history.top().index;
-			directory_history.pop();
-			if (directory_history.empty())
-			{
-				DriveMenu();
-				return;
-			}
-			DirectoryData dir_data = directory_history.top();
-			selected_path = dir_data.path;
-		}
-		else
-		{
-			selected_path = directory_history.top().path;
-		}
-	}
-	else
-	{
-		directory_history.pop();
-		selected_path = directory_history.top().path;
-	}
-
-	DirMenu();
-	audio_player.PlayUserSFX(Audio::SND_ENTER, 0);
-}
 void SpecialFilemanager::CoutPageString()
 {
 	std::filesystem::path file_str = std::filesystem::relative("data/img/");
@@ -486,7 +430,7 @@ void SpecialFilemanager::CollectFile()
 
 	// поиск в векторе файлов
 	int i = 0;
-	for (auto& gen : generated_filesNEW)
+	for (auto& gen : generated_files)
 	{
 		if (gen.path == file_path)
 		{
@@ -522,7 +466,7 @@ void SpecialFilemanager::CollectFile()
 		++i;
 	}
 	// удаление из вектора файлов
-	generated_filesNEW.erase(generated_filesNEW.begin() + i);
+	generated_files.erase(generated_files.begin() + i);
 	current_index = collected_index;
 
 	CoutPageString();
@@ -530,6 +474,42 @@ void SpecialFilemanager::CollectFile()
 	DirMenu();
 }
 
+
+// Перемещение
+void SpecialFilemanager::PreviousDir()
+{
+	// если можно вызвать меню действий (т.е. мы НЕ в меню действий)
+	if (std::filesystem::is_directory(selected_path))
+	{
+		// Если вне меню действий
+		if (action_allowed)
+		{
+			current_page = directory_history.top().page;
+			current_index = directory_history.top().index;
+			directory_history.pop();
+			if (directory_history.empty())
+			{
+				DriveMenu();
+				return;
+			}
+			DirectoryData dir_data = directory_history.top();
+			selected_path = dir_data.path;
+		}
+		else
+		{
+			selected_path = directory_history.top().path;
+		}
+	}
+	else
+	{
+		directory_history.pop();
+		selected_path = directory_history.top().path;
+	}
+
+	DirMenu();
+	graphics_update_required = false;
+	audio_player.PlayUserSFX(Audio::SND_ENTER, 0);
+}
 void SpecialFilemanager::EnterDir()
 {
 	try
@@ -549,6 +529,7 @@ void SpecialFilemanager::EnterDir()
 			current_index = 0;
 
 			DirMenu();
+			graphics_update_required = true;
 			audio_player.PlayUserSFX(Audio::SND_ENTER, 0);
 		}
 		else
@@ -594,7 +575,6 @@ void SpecialFilemanager::PageRight()
 }
 
 
-
 // Меню 
 void SpecialFilemanager::DirMenu()
 {
@@ -637,16 +617,16 @@ void SpecialFilemanager::DirMenu()
 		directories.insert(directories.begin(), "EXIT");
 
 
-	if (the_entity.chase_mode)
+	if (entity.chase_mode)
 	{
-		if (the_entity.index >= directories.size())
-			the_entity.index = directories.size() - 1;
+		if (entity.index >= directories.size())
+			entity.index = directories.size() - 1;
 
-		directories.at(the_entity.index).replace_filename("???");
+		directories.at(entity.index).replace_filename("???");
 	}
 
 	// Проверка есть в данной директории один из файлов и добавление его в вектор дерикторий в случайной точке
-	for (auto& gen : generated_filesNEW)
+	for (auto& gen : generated_files)
 	{
 		if (gen.path == selected_path)
 		{
@@ -685,7 +665,7 @@ void SpecialFilemanager::DirMenu()
 						if (std::filesystem::is_directory(entry))
 						{
 							// entity nearby
-							if (the_entity.path == entry)
+							if (entity.path == entry)
 								current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), fgMAGENTA, std::bind(&SpecialFilemanager::EnterDir, this)));
 							// default
 							else
@@ -731,12 +711,9 @@ void SpecialFilemanager::DriveMenu()
 	current_menu->AddItem(std::make_shared<MenuItem>("Выход", fgRED, std::bind(&SpecialFilemanager::Shutdown, this)));
 }
 
+// Инициализация игры
 void SpecialFilemanager::Initialize()
 {
-	// seed rng first:
-	rng_type::result_type const seedval = time(0);
-	rng.seed(seedval);
-
 	setlocale(LC_ALL, "");
 	// Не работает ввод кирилицы без этого
 	system("chcp 1251"); system("cls");
@@ -761,28 +738,30 @@ void SpecialFilemanager::Start()
 
 	//
 	GenerateFiles();
-	the_entity.path = generated_filesNEW.at(generated_filesNEW.size() - 1).path;
+	entity.path = generated_files.at(generated_files.size() - 1).path;
 
 	system("cls");
 	std::cout << "\n\n\n\t\t\t\tcollect 8 files";
 	Sleep(2000);
+	graphics_update_required = true;
 
-	the_entity.is_active = true;
+	entity.is_active = true;
 }
 
+// Вывод информации
 void SpecialFilemanager::CoutEntInfo()
 {
-	std::cout << SetColor(fgDARK_MAGENTA) << "ENTITY: " << the_entity.path
-		<< " : idx=" << the_entity.index
-		<< " pg=" << the_entity.page
-		<< " cnt=" << the_entity.counter
-		<< " prox=" << the_entity.proximity
+	std::cout << SetColor(fgDARK_MAGENTA) << "ENTITY: " << entity.path
+		<< " : idx=" << entity.index
+		<< " pg=" << entity.page
+		<< " cnt=" << entity.counter
+		<< " prox=" << entity.proximity
 		<< SetColor(fgGRAY) << "\n";
 }
 void SpecialFilemanager::CoutInfo()
 {
 	// вывод мест файлов
-	for (auto& gen : generated_filesNEW)
+	for (auto& gen : generated_files)
 	{
 		std::cout << gen.path << " : pos=" << gen.index << "\n";
 	}
@@ -792,6 +771,8 @@ void SpecialFilemanager::CoutInfo()
 		std::cout << SetColor(fgRED) << "\tLEAVE\n";
 	}
 }
+
+// Обновление логики и графики
 void SpecialFilemanager::Update()
 {
 	// 
@@ -802,16 +783,19 @@ void SpecialFilemanager::Update()
 	if (current_paged_menu)
 		current_paged_menu();
 
+	if (graphics_update_required)
+	{
+		// очистка консоли
+		clearConsole();
 
+		// вывод подробных данных
+		CoutInfo();
 
-	// очистка консоли
-	clearConsole();
+		// вывод меню
+		current_menu->CoutMenu();
 
-	// вывод подробных данных
-	CoutInfo();
-
-	// вывод меню
-	current_menu->CoutMenu();
+		graphics_update_required = false;
+	}
 
 	// проверка действия пользователя
 	MenuAction();
@@ -820,32 +804,32 @@ void SpecialFilemanager::Update()
 // Конструктор
 SpecialFilemanager::SpecialFilemanager()
 		: FilemanagerBase()
-		, the_entity(200, 50, 10)
+		, entity(20000, 50, 10)
 		, collected_files(0)
 		, current_control_code(ControlCode::NONE)
 		, action_allowed(false)
+		, graphics_update_required(true)
 	{}
 
-// Запуск программы
+// Запуск
 bool SpecialFilemanager::Run()
 	{
 		Initialize();
 
-		std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-		std::chrono::steady_clock::time_point end;
-		std::chrono::milliseconds duration;
+		// Таймер графики
+		Timer timer_graphics;
+
+		// Таймер ввода
+		Timer timer_input;
 
 		// Цикл
 		while (current_menu)
 		{
-			end = std::chrono::steady_clock::now();
-			duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-			if (duration.count() > 200)
-			{
+			if(timer_input.ThresholdReached(50))
+				ParseControlAction();
+
+			if (timer_graphics.ThresholdReached(10))
 				Update();
-				start = std::chrono::steady_clock::now();
-			}
-			ParseControlAction();
 		}
 
 		return false;

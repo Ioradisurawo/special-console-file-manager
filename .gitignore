@@ -28,3 +28,23 @@ OOP Filemanager/Release/vc143.pdb
 Release/OOP Filemanager.exe
 Release/OOP Filemanager.pdb
 OOP Filemanager.sln
+*.obj
+*.ilk
+*.log
+*.tlog
+*.idb
+*.pdb
+*.vsidx
+.vs/OOP Filemanager/v17/.suo
+.vs/OOP Filemanager/v17/Browse.VC.db
+.vs/OOP Filemanager/v17/Browse.VC.db-shm
+.vs/OOP Filemanager/v17/Browse.VC.db-wal
+.vs/OOP Filemanager/v17/Browse.VC.opendb
+*.ipch
+.vs/OOP Filemanager/v17/Solution.VC.db
+OOP Filemanager/Debug/OOP Filemanager.exe.recipe
+OOP Filemanager/x64/Release/OOP Filemanager.exe.recipe
+OOP Filemanager/x64/Release/OOP Filemanager.iobj
+OOP Filemanager/x64/Release/OOP Filemanager.ipdb
+x64/Release/OOP Filemanager.exe
+Debug/OOP Filemanager.exe

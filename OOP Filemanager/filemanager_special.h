@@ -2,7 +2,6 @@
 #include "filemanager_base.h"
 #include <chrono>
 #include <ctime>
-#include <stdlib.h>
 
 // BASS documentation
 // https://www.un4seen.com/doc/#bass/
@@ -82,21 +81,24 @@ struct EntityData
 
 class SpecialFilemanager : public FilemanagerBase
 {
-	int collected_files;
-
+	// ѕеременные
 	
-	std::vector<std::filesystem::path>	generated_files;
-	std::vector<DirectoryData>			generated_filesNEW;
+	int collected_files;
+	
+	std::vector<DirectoryData> generated_files;
 	ControlCode current_control_code;
 
 	// entity
-	EntityData the_entity;
+	EntityData entity;
 
 	// данные о текущей позиции пользовател€ в директории
 	DirNavData nav_data;
 
 	// пересмотреть надобность данной переменной
 	bool action_allowed;
+
+	// проверка на надобность обновлени€ графики
+	bool graphics_update_required;
 
 	// ”правление и вывод изображени€
 	void clearConsole();
@@ -146,7 +148,6 @@ class SpecialFilemanager : public FilemanagerBase
 	void CoutEntInfo();
 	void CoutInfo();
 	void Update();
-
 public:
 
 	//  онструктор
