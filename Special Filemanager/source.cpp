@@ -3,7 +3,7 @@
 
 int main()
 {
-    std::unique_ptr<FilemanagerBase> fm = std::make_unique<SpecialFilemanager>();
+    std::unique_ptr<FilemanagerBase> fm = std::make_unique<ConsoleFilemanager>();
     if (fm->Run() == true)
     {
         fm = nullptr; fm = std::make_unique<SpecialFilemanager>();

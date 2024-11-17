@@ -48,7 +48,8 @@ void SpecialFilemanager::MenuAction()
 	{
 		case ControlCode::CONFIRM:
 		{
-			current_menu->InvokeItem();
+			if (timer_player_move.ThresholdReached(player_move_delay))
+				current_menu->InvokeItem();
 
 			break;
 		}
@@ -61,54 +62,59 @@ void SpecialFilemanager::MenuAction()
 		}
 		case ControlCode::UP:
 		{
-			if (current_menu->IsVertical())
+			if (timer_player_move.ThresholdReached(player_move_delay) && current_menu->IsVertical())
 			{
 				if (current_index - 1 >= 0)
 				{
 					current_menu->PreviousItem();
 					--current_index;
 					graphics_update_required = true;
+					audio_player.PlayUserSFX(Audio::SND_MOVE, (rand() % 2));
 				}
 			}
 
-			audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
 			break;
 		}
 		case ControlCode::DOWN:
 		{
-			if (current_menu->IsVertical())
+			if (timer_player_move.ThresholdReached(player_move_delay) && current_menu->IsVertical())
 			{
 				if (current_index + 1 < directories.size())
 				{
 					current_menu->NextItem();
 					++current_index;
 					graphics_update_required = true;
+					audio_player.PlayUserSFX(Audio::SND_MOVE, (rand() % 2));
 				}
 			}
 
-			audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
 
 			break;
 		}
 		case ControlCode::LEFT:
 		{
-			if (!current_menu->IsVertical())
-				current_menu->PreviousItem();
+			if(timer_player_move.ThresholdReached(player_move_delay))
+			{
+				if (!current_menu->IsVertical())
+					current_menu->PreviousItem();
 
+				PageLeft();
+				graphics_update_required = true;
+			}
 
-			PageLeft();
-			graphics_update_required = true;
 
 			break;
 		}
 		case ControlCode::RIGHT:
 		{
-			if (!current_menu->IsVertical())
-				current_menu->NextItem();
+			if (timer_player_move.ThresholdReached(player_move_delay))
+			{
+				if (!current_menu->IsVertical())
+					current_menu->NextItem();
 
-			PageRight();
-			graphics_update_required = true;
-
+				PageRight();
+				graphics_update_required = true;
+			}
 			break;
 		}
 		default:
@@ -145,7 +151,7 @@ void SpecialFilemanager::Shutdown()
 			for (int y = 0; y < ScreenHeight; y++)
 			{
 				charInfo[y * ScreenWidth + x].Char.AsciiChar = ' ';
-				gen = Random(0, 5);
+				gen = (rand() % 6);
 				switch (gen)
 				{
 				case 0:
@@ -218,7 +224,7 @@ void SpecialFilemanager::EntityNavigateToDir()
 	}
 	else
 	{
-		entity.counter += Random(0, entity.speed_mod);
+		entity.counter += (rand() % entity.speed_mod + 1);
 	}
 
 }
@@ -246,19 +252,25 @@ void SpecialFilemanager::EntityAct()
 		// уже преследует
 		if (entity.chase_mode)
 		{
-			if (entity.chase_counter >= entity.chase_counter_limit)
+			
+			if (timer_entity_move.ThresholdReached(entity_move_delay))
 			{
 				if (entity.index > current_index + (entries_per_page * current_page))
 					--entity.index;
 				else
 					++entity.index;
 
-				//the_entity.index += current_index > the_entity.index ? 1 : -1;
+				graphics_update_required = true;
 			}
-			else
-			{
-				entity.chase_counter += Random(0, entity.speed_mod);
-			}
+			// entity.chase_counter и chase_counter_limit уже бесполезны скорее всего
+			//if (entity.chase_counter >= entity.chase_counter_limit)
+			//{
+			//	//the_entity.index += current_index > the_entity.index ? 1 : -1;
+			//}
+			//else
+			//{
+			//	entity.chase_counter += Random(0, entity.speed_mod);
+			//}
 			directories.at(entity.index).replace_filename("???");
 		}
 		// начало преследования в директории
@@ -277,6 +289,8 @@ void SpecialFilemanager::EntityAct()
 			entity.index = i - 1;
 
 			entity.last_path = entity.path;
+
+			graphics_update_required = true;
 		}
 	}
 }
@@ -296,7 +310,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 		}
 
 		if (found)
-			counter += Random(0, 10);
+			counter += rand() % 11;
 		else
 		{
 			// подсчёт размера директории
@@ -305,7 +319,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 				++dir_size;
 
 			// спавн файла на случайной позиции от 0 до размера дир
-			generated_files.push_back(DirectoryData(path, 0, Random(0, dir_size - 1)));
+			generated_files.push_back(DirectoryData(path, 0, rand() % dir_size));
 			return;
 		}
 	}
@@ -314,9 +328,9 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 	{
 		for (auto& entry : std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied))
 		{
-			if (entry.path().filename().string().at(0) != '$' && entry.is_directory() && Random(0, 10) > 5)
+			if (entry.path().filename().string().at(0) != '$' && entry.is_directory() && (rand() % 11) > 5)
 			{
-				RecursiveGeneration(count + Random(0, 10), counter, entry);
+				RecursiveGeneration(count + (rand() % 11), counter, entry);
 				return;
 			}
 		}
@@ -330,7 +344,7 @@ void SpecialFilemanager::GenerateFiles()
 {
 	while (generated_files.size() < 8)
 	{
-		RecursiveGeneration(0, 10, selected_path);
+		RecursiveGeneration(0, 30, selected_path);
 	}
 }
 
@@ -441,23 +455,29 @@ void SpecialFilemanager::CollectFile()
 			case 8:
 			{
 				audio_player.PlayBGM(Audio::MUS_STAGE_5);
+				entity_move_delay = 200;
+				entity.speed_mod += 200;
 				break;
 			}
 			case 6:
 			{
 				audio_player.PlayBGM(Audio::MUS_STAGE_4);
+				entity_move_delay = 250;
+				entity.speed_mod += 25;
 				break;
 			}
 			case 4:
 			{
 				audio_player.PlayBGM(Audio::MUS_STAGE_3);
-
+				entity_move_delay = 400;
+				entity.speed_mod += 25;
 				break;
 			}
 			case 2:
 			{
 				audio_player.PlayBGM(Audio::MUS_STAGE_2);
-
+				entity_move_delay -= 450;
+				entity.speed_mod += 15;
 				break;
 			}
 			}
@@ -507,7 +527,7 @@ void SpecialFilemanager::PreviousDir()
 	}
 
 	DirMenu();
-	graphics_update_required = false;
+	graphics_update_required = true;
 	audio_player.PlayUserSFX(Audio::SND_ENTER, 0);
 }
 void SpecialFilemanager::EnterDir()
@@ -556,8 +576,9 @@ void SpecialFilemanager::PageLeft()
 	if (current_page - 1 >= 0)
 	{
 		--current_page;
-		audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
+		audio_player.PlayUserSFX(Audio::SND_MOVE, rand() % 2);
 		current_paged_menu();
+		graphics_update_required = true;
 	}
 }
 void SpecialFilemanager::PageRight()
@@ -569,8 +590,9 @@ void SpecialFilemanager::PageRight()
 	if (current_page + 1 <= directories.size() / entries_per_page)
 	{
 		++current_page;
-		audio_player.PlayUserSFX(Audio::SND_MOVE, Random(0, 1));
+		audio_player.PlayUserSFX(Audio::SND_MOVE, rand() % 2);
 		current_paged_menu();
+		graphics_update_required = true;
 	}
 }
 
@@ -585,6 +607,12 @@ void SpecialFilemanager::DirMenu()
 
 	// перезагрузка директорий
 	ReloadDirs();
+
+	// Вставка выхода в первый элемент
+	if (directory_history.size() > 1)
+		directories.insert(directories.begin(), "^");
+	else if (collected_files == 8)
+		directories.insert(directories.begin(), "EXIT");
 
 	// Пересчитать текущую позицию пользователя
 	nav_data.ReCalc(current_page, entries_per_page, directories.size());
@@ -610,11 +638,9 @@ void SpecialFilemanager::DirMenu()
 	// Установка индекса текущего элемента
 	current_menu->SetItemIndex(current_index);
 
-	// Вставка выхода в первый элемент
-	if (directory_history.size() > 1)
-		directories.insert(directories.begin(), "^");
-	else if (collected_files == 8)
-		directories.insert(directories.begin(), "EXIT");
+
+
+
 
 
 	if (entity.chase_mode)
@@ -625,7 +651,7 @@ void SpecialFilemanager::DirMenu()
 		directories.at(entity.index).replace_filename("???");
 	}
 
-	// Проверка есть в данной директории один из файлов и добавление его в вектор дерикторий в случайной точке
+	// Проверка есть в данной директории один из файлов и добавление его в вектор дерикторий в определенной точке
 	for (auto& gen : generated_files)
 	{
 		if (gen.path == selected_path)
@@ -633,7 +659,6 @@ void SpecialFilemanager::DirMenu()
 			directories.insert(directories.begin() + gen.index, gen.path + "/unk_file???.txt");
 		}
 	}
-
 
 
 	// Заполнение пунктами меню
@@ -645,41 +670,66 @@ void SpecialFilemanager::DirMenu()
 		if (i == nav_data.lim)
 			break;
 
-		if (i >= nav_data.start_index)
+		if (directories.size() / entries_per_page == 0 || i >= nav_data.start_index)
 		{
+			bool common_entry = true;
+
+			// Выход
 			if (entry.filename() == "EXIT")
+			{
+				common_entry = false;
 				current_menu->AddItem(std::make_shared<MenuItem>("\t\t[ RETURN ]", fgYELLOW, std::bind(&SpecialFilemanager::Exit, this)));
-			// подъем
+			}
+			// Подьём
 			if (entry.filename() == "^")
+			{
+				common_entry = false;
 				current_menu->AddItem(std::make_shared<MenuItem>("[    ]\t/..", collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::PreviousDir, this)));
-			else
-				// entity
-				if (entry.filename() == "???")
-					current_menu->AddItem(std::make_shared<MenuItem>("[???]\t???", fgMAGENTA, std::bind(&SpecialFilemanager::Shutdown, this)));
-				else
-					// collectable file
-					if (entry.filename().replace_extension("") == "unk_file???")
-						current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgYELLOW, std::bind(&SpecialFilemanager::CollectFile, this)));
+			}
+			// Пред. страница
+			if (entry.filename() == "<")
+			{
+				common_entry = false;
+				current_menu->AddItem(std::make_shared<MenuItem>("[    ]\t<--", collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::PageLeft, this)));
+			}
+			// След. страница
+			if (entry.filename() == ">")
+			{
+				common_entry = false;
+				current_menu->AddItem(std::make_shared<MenuItem>("[    ]\t-->", collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::PageRight, this)));
+			}
+			// entity
+			if (entry.filename() == "???")
+			{
+				common_entry = false;
+				current_menu->AddItem(std::make_shared<MenuItem>("[???]\t???", fgMAGENTA, std::bind(&SpecialFilemanager::Shutdown, this)));
+			}
+			// collectable file
+			if (entry.filename().replace_extension("") == "unk_file???")
+			{
+				common_entry = false;
+				current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgYELLOW, std::bind(&SpecialFilemanager::CollectFile, this)));
+			}
+			
+			if(common_entry)
+			{
+				// directory
+				if (std::filesystem::is_directory(entry))
+				{
+					// entity nearby
+					if (entity.path == entry)
+						current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), fgMAGENTA, std::bind(&SpecialFilemanager::EnterDir, this)));
+					// default
 					else
-					{
-						if (std::filesystem::is_directory(entry))
-						{
-							// entity nearby
-							if (entity.path == entry)
-								current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), fgMAGENTA, std::bind(&SpecialFilemanager::EnterDir, this)));
-							// default
-							else
-								current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::EnterDir, this)));
-						}
-						// file
-						else
-							current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgGRAY, std::bind(&SpecialFilemanager::EnterDir, this)));
-					}
+						current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::EnterDir, this)));
+				}
+				// file
+				else
+					current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgGRAY, std::bind(&SpecialFilemanager::EnterDir, this)));
+			}
 		}
 		++i;
 	}
-
-	// Возврат на пункт выше
 }
 void SpecialFilemanager::DriveMenu()
 {
@@ -794,6 +844,7 @@ void SpecialFilemanager::Update()
 		// вывод меню
 		current_menu->CoutMenu();
 
+		//
 		graphics_update_required = false;
 	}
 
@@ -804,23 +855,30 @@ void SpecialFilemanager::Update()
 // Конструктор
 SpecialFilemanager::SpecialFilemanager()
 		: FilemanagerBase()
+		, player_move_delay(200)
+		, entity_move_delay(500)
 		, entity(20000, 50, 10)
 		, collected_files(0)
 		, current_control_code(ControlCode::NONE)
 		, action_allowed(false)
 		, graphics_update_required(true)
-	{}
+	{
+		srand(time(0));
+	}
 
 // Запуск
 bool SpecialFilemanager::Run()
 	{
 		Initialize();
 
-		// Таймер графики
-		Timer timer_graphics;
+
+		// Таймер обновления
+		Timer timer_update;
 
 		// Таймер ввода
 		Timer timer_input;
+
+
 
 		// Цикл
 		while (current_menu)
@@ -828,7 +886,7 @@ bool SpecialFilemanager::Run()
 			if(timer_input.ThresholdReached(50))
 				ParseControlAction();
 
-			if (timer_graphics.ThresholdReached(10))
+			if (timer_update.ThresholdReached(10))
 				Update();
 		}
 

@@ -66,7 +66,6 @@ const int&					Menu::GetItemIndex() { return current_item; }
 
 
 // Вывод
-
 void						Menu::CoutMenu()
 {
 	std::cout << top_string;

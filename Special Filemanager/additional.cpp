@@ -1,4 +1,4 @@
-#include "additional_funcs.h"
+#include "additional.h"
 
 // Рандом
 std::mt19937 rng;

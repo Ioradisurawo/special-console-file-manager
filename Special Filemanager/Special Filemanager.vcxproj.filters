@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\Menu">
+      <UniqueIdentifier>{2ef812fc-3b5a-4057-a895-147164cd302d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Filemanager">
+      <UniqueIdentifier>{82369fb0-749c-483e-af5d-35ea0007e11b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Other">
+      <UniqueIdentifier>{73675a54-8db5-4cc4-93dc-e8c2469d8c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Menu">
+      <UniqueIdentifier>{53f7aef3-b66b-4b8b-8c59-003230471b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Filemanager">
+      <UniqueIdentifier>{da24a3bb-ab95-43ca-bfa4-b392141e92ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Other">
+      <UniqueIdentifier>{f3307aea-7812-4114-b937-e984f2a5845d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="filemanager_base.h">
+      <Filter>Файлы заголовков\Filemanager</Filter>
+    </ClInclude>
+    <ClInclude Include="filemanager_console.h">
+      <Filter>Файлы заголовков\Filemanager</Filter>
+    </ClInclude>
+    <ClInclude Include="filemanager_special.h">
+      <Filter>Файлы заголовков\Filemanager</Filter>
+    </ClInclude>
+    <ClInclude Include="additional.h">
+      <Filter>Файлы заголовков\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="audio_player.h">
+      <Filter>Файлы заголовков\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="bass.h">
+      <Filter>Файлы заголовков\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_coloured.h">
+      <Filter>Файлы заголовков\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_controller.h">
+      <Filter>Файлы заголовков\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="menuItem_coloured.h">
+      <Filter>Файлы заголовков\Menu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="filemanager_base.cpp">
+      <Filter>Исходные файлы\Filemanager</Filter>
+    </ClCompile>
+    <ClCompile Include="filemanager_console.cpp">
+      <Filter>Исходные файлы\Filemanager</Filter>
+    </ClCompile>
+    <ClCompile Include="filemanager_special.cpp">
+      <Filter>Исходные файлы\Filemanager</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_coloured.cpp">
+      <Filter>Исходные файлы\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_controller.cpp">
+      <Filter>Исходные файлы\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="menuItem_coloured.cpp">
+      <Filter>Исходные файлы\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="additional.cpp">
+      <Filter>Исходные файлы\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="audio_player.cpp">
+      <Filter>Исходные файлы\Other</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

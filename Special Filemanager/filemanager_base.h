@@ -7,7 +7,7 @@
 #include <functional>
 #include <windows.h>
 
-#include "additional_funcs.h"
+#include "additional.h"
 #include "menu_coloured.h"
 #include "menu_controller.h"
 

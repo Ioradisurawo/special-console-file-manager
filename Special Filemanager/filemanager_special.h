@@ -26,7 +26,6 @@ struct DirNavData
 
 	// предел
 	int lim;
-
 public:
 	DirNavData()
 		: start_index(0)
@@ -83,10 +82,20 @@ class SpecialFilemanager : public FilemanagerBase
 {
 	// Переменные
 	
+	// Кол-во собранных файлов
 	int collected_files;
 	
+	// 
 	std::vector<DirectoryData> generated_files;
 	ControlCode current_control_code;
+
+	// Таймер перемещения игрока
+	int player_move_delay;
+	Timer timer_player_move;
+
+	// Таймер перемещения существа
+	int entity_move_delay;
+	Timer timer_entity_move;
 
 	// entity
 	EntityData entity;
