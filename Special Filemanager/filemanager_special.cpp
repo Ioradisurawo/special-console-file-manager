@@ -1,6 +1,7 @@
 #include "filemanager_special.h"
 
-
+// Can hide in directory if it's size is >= 5
+// 
 
 // Древность
 const int ScreenHeight = 120;
@@ -342,6 +343,15 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 }
 void SpecialFilemanager::GenerateFiles()
 {
+	ReloadDirs();
+
+	//for (int entry_idx = 0; generated_files.size() < 8; ++entry_idx)
+	//{
+	//	if (entry_idx <= directories.size())
+	//		entry_idx = 0;
+
+	//	
+	//}
 	while (generated_files.size() < 8)
 	{
 		RecursiveGeneration(0, 30, selected_path);

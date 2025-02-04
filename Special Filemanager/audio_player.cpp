@@ -12,55 +12,56 @@ void AudioPlayer::PlayBGM(Audio audio)
 	{
 		BASS_ChannelFree(hstream_background);
 
+
 		if (mute)
 			return;
 
 		switch (audio)
 		{
-		case Audio::MUS_EXIT:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/unknown.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
-			BASS_ChannelPlay(hstream_background, true); // проигрывание файла
-			break;
-		}
-		case Audio::MUS_OVER:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/noise.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
-			BASS_ChannelPlay(hstream_background, true); // проигрывание файла
-			break;
-		}
-		case Audio::MUS_STAGE_1:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/1.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
-			BASS_ChannelPlay(hstream_background, true); // проигрывание файла
-			break;
-		}
-		case Audio::MUS_STAGE_2:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/2.wav", 0, 0, BASS_MUSIC_LOOP);
-			BASS_ChannelPlay(hstream_background, true);
-			break;
-		}
-		case Audio::MUS_STAGE_3:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/3.wav", 0, 0, BASS_MUSIC_LOOP);
-			BASS_ChannelPlay(hstream_background, true);
-			break;
-		}
-		case Audio::MUS_STAGE_4:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/4.wav", 0, 0, BASS_MUSIC_LOOP);
-			BASS_ChannelPlay(hstream_background, true);
-			break;
-		}
-		case Audio::MUS_STAGE_5:
-		{
-			hstream_background = BASS_StreamCreateFile(FALSE, L"data/fun_is_infinite.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
-			BASS_ChannelPlay(hstream_background, true); // проигрывание файла
-			break;
-		}
-		default:
-			break;
+			case Audio::MUS_EXIT:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/unknown.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
+				BASS_ChannelPlay(hstream_background, true); // проигрывание файла
+				break;
+			}
+			case Audio::MUS_OVER:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/noise.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
+				BASS_ChannelPlay(hstream_background, true); // проигрывание файла
+				break;
+			}
+			case Audio::MUS_STAGE_1:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/1.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
+				BASS_ChannelPlay(hstream_background, true); // проигрывание файла
+				break;
+			}
+			case Audio::MUS_STAGE_2:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/2.wav", 0, 0, BASS_MUSIC_LOOP);
+				BASS_ChannelPlay(hstream_background, true);
+				break;
+			}
+			case Audio::MUS_STAGE_3:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/3.wav", 0, 0, BASS_MUSIC_LOOP);
+				BASS_ChannelPlay(hstream_background, true);
+				break;
+			}
+			case Audio::MUS_STAGE_4:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/4.wav", 0, 0, BASS_MUSIC_LOOP);
+				BASS_ChannelPlay(hstream_background, true);
+				break;
+			}
+			case Audio::MUS_STAGE_5:
+			{
+				hstream_background = BASS_StreamCreateFile(FALSE, L"data/fun_is_infinite.wav", 0, 0, BASS_MUSIC_LOOP); //загрузка файла в поток
+				BASS_ChannelPlay(hstream_background, true); // проигрывание файла
+				break;
+			}
+			default:
+				break;
 		}
 	}
 void AudioPlayer::PlayUserSFX(Audio audio, const int& variation)

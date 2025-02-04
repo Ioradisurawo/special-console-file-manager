@@ -13,6 +13,7 @@
 
 #include "audio_player.h"
 
+// ? Можно улучшить (или не используется?)
 struct DirectoryData
 {
 	std::filesystem::path path;
@@ -28,6 +29,7 @@ struct DirectoryData
 class FilemanagerBase
 {
 protected:
+	// ! Заменить на pdcurses реализацию
 	HANDLE									cHandle;
 
 	// BASS поток

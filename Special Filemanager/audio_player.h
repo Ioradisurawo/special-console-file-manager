@@ -1,7 +1,16 @@
 #pragma once
 #include "bass.h"
+#include <map>
+#include <vector>
+
 #pragma comment(lib, "bass.lib")
 
+enum class AudioChannel
+{
+	BACKGROUND,
+	USER,
+	AMBIENT
+};
 enum class Audio
 {
 	NONE,
