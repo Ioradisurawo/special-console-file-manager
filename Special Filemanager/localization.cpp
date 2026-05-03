@@ -18,6 +18,7 @@ void Localization::UpdateLocale()
 		lcmap["empty"] = "Пусто";
 		lcmap["last_entry"] = "Последняя запись";
 		lcmap["exit"] = "Выход";
+		lcmap["drive_selection"] = "Выбор Диска";
 
 
 	}
@@ -35,5 +36,7 @@ void Localization::UpdateLocale()
 		lcmap["empty"] = "Empty";
 		lcmap["last_entry"] = "Last entry";
 		lcmap["exit"] = "Exit";
+		lcmap["drive_selection"] = "Drive Selection";
+
 	}
 }

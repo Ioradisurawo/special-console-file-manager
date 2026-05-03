@@ -15,6 +15,7 @@
 #define lc_empty Localization::lcmap["empty"]
 #define lc_last_entry Localization::lcmap["last_entry"]
 #define lc_exit Localization::lcmap["exit"]
+#define lc_drive_selection Localization::lcmap["drive_selection"]
 
 
 // For later

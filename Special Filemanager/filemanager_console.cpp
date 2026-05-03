@@ -648,7 +648,7 @@ void ConsoleFilemanager::DirMenu()
 	for (int i = start_index; i < lim; i++)
 	{
 		entry = directories.at(i);
-		current_menu->AddItem(std::make_shared<MenuItem>((std::filesystem::is_directory(entry) ? "[папка]\t" : "[файл]\t") + entry.filename().string(), fgWHITE, std::bind(&ConsoleFilemanager::SelectEntry, this)));
+		current_menu->AddItem(std::make_shared<MenuItem>((std::filesystem::is_directory(entry) ? "[" + lc_folder + "]\t" : "[" + lc_file + "]\t") + entry.filename().string(), fgWHITE, std::bind(&ConsoleFilemanager::SelectEntry, this)));
 	}
 }
 void ConsoleFilemanager::DriveMenu()
@@ -664,7 +664,7 @@ void ConsoleFilemanager::DriveMenu()
 	current_menu = std::make_shared<Menu>
 		(
 			cHandle, fgWHITE,
-			"[-- Выбор Диска  --]\n",
+			"[-- "+ lc_drive_selection +"--]\n",
 			"|_                _]\n",
 			"[ ", "  ]",
 			"| ", "  ",
@@ -680,7 +680,7 @@ void ConsoleFilemanager::DriveMenu()
 	}
 
 
-	current_menu->AddItem(std::make_shared<MenuItem>("Выход", fgWHITE, std::bind(&ConsoleFilemanager::Shutdown, this)));
+	current_menu->AddItem(std::make_shared<MenuItem>(lc_exit, fgWHITE, std::bind(&ConsoleFilemanager::Shutdown, this)));
 }
 
 // Конструктор
