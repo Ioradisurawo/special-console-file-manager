@@ -1,4 +1,5 @@
 #include "filemanager_special.h"
+#include "localization.h"
 
 
 
@@ -296,6 +297,7 @@ void SpecialFilemanager::EntityAct()
 }
 
 
+
 // Generation
 void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const std::filesystem::path& path)
 {
@@ -319,7 +321,7 @@ void SpecialFilemanager::RecursiveGeneration(const int count, int counter, const
 				++dir_size;
 
 			// спавн файла на случайной позиции от 0 до размера дир
-			generated_files.push_back(DirectoryData(path, 0, rand() % dir_size));
+			generated_files.push_back(DirectoryData(path, 0, dir_size > 0 ? rand() % dir_size : 0));
 			return;
 		}
 	}
@@ -708,7 +710,7 @@ void SpecialFilemanager::DirMenu()
 			if (entry.filename().replace_extension("") == "unk_file???")
 			{
 				common_entry = false;
-				current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgYELLOW, std::bind(&SpecialFilemanager::CollectFile, this)));
+				current_menu->AddItem(std::make_shared<MenuItem>("[" + lc_file + "]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgYELLOW, std::bind(&SpecialFilemanager::CollectFile, this)));
 			}
 			
 			if(common_entry)
@@ -718,14 +720,14 @@ void SpecialFilemanager::DirMenu()
 				{
 					// entity nearby
 					if (entity.path == entry)
-						current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), fgMAGENTA, std::bind(&SpecialFilemanager::EnterDir, this)));
+						current_menu->AddItem(std::make_shared<MenuItem>("[" + lc_folder + "]\t" + entry.filename().string(), fgMAGENTA, std::bind(&SpecialFilemanager::EnterDir, this)));
 					// default
 					else
-						current_menu->AddItem(std::make_shared<MenuItem>("[папка]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::EnterDir, this)));
+						current_menu->AddItem(std::make_shared<MenuItem>("[" + lc_folder + "]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgWHITE, std::bind(&SpecialFilemanager::EnterDir, this)));
 				}
 				// file
 				else
-					current_menu->AddItem(std::make_shared<MenuItem>("[файл]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgGRAY, std::bind(&SpecialFilemanager::EnterDir, this)));
+					current_menu->AddItem(std::make_shared<MenuItem>("[" + lc_file + "]\t" + entry.filename().string(), collected_files == 8 ? fgRED : fgGRAY, std::bind(&SpecialFilemanager::EnterDir, this)));
 			}
 		}
 		++i;
@@ -758,15 +760,13 @@ void SpecialFilemanager::DriveMenu()
 	{
 		current_menu->AddItem(std::make_shared<MenuItem>(entry.string(), fgGRAY, std::bind(&SpecialFilemanager::Start, this)));
 	}
-	current_menu->AddItem(std::make_shared<MenuItem>("Выход", fgRED, std::bind(&SpecialFilemanager::Shutdown, this)));
+	current_menu->AddItem(std::make_shared<MenuItem>(lc_exit, fgRED, std::bind(&SpecialFilemanager::Shutdown, this)));
 }
 
 // Инициализация игры
 void SpecialFilemanager::Initialize()
 {
 	setlocale(LC_ALL, "");
-	// Не работает ввод кирилицы без этого
-	system("chcp 1251"); system("cls");
 
 	// Спрятать курсор
 	CONSOLE_CURSOR_INFO info;

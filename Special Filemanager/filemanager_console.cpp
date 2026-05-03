@@ -1,4 +1,5 @@
 #include "filemanager_console.h"
+#include "localization.h"
 
 
 std::vector<ControlCode> k_code = { ControlCode::UP, ControlCode::UP, ControlCode::DOWN, ControlCode::DOWN, ControlCode::LEFT, ControlCode::RIGHT, ControlCode::LEFT, ControlCode::RIGHT, ControlCode::ACTION, ControlCode::ACTION };
@@ -694,10 +695,6 @@ ConsoleFilemanager::ConsoleFilemanager()
 // Запуск программы
 bool ConsoleFilemanager::Run()
 	{
-		setlocale(LC_ALL, "");
-		// Не работает ввод кирилицы без этого
-		system("chcp 1251"); system("cls");
-
 		// Спрятать курсор
 		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 		CONSOLE_CURSOR_INFO info;
@@ -715,14 +712,14 @@ bool ConsoleFilemanager::Run()
 
 			if (tooltips_enabled)
 			{
-				std::cout << "Управление:  Перемещение - wasd/стрелки  ;  Выбор - enter/e  ;  Назад - esc ; Скрыть подсказки - q/й\n";
+				std::cout << lc_control_tips + "\n";
 			}
 			else
 			{
-				std::cout << "Показать подсказки - q/й\n";
+				std::cout << lc_show_tips + "\n";
 			}
-			std::cout << "Буфер: " << selected_path << " ; ";
-			std::cout << "Последняя запись: " << (directory_history.empty() ? "пусто" : directory_history.top().path);
+			std::cout << lc_buffer << ": " << selected_path << "; ";
+			std::cout << lc_last_entry << ": " << (directory_history.empty() ? lc_empty : directory_history.top().path);
 			std::cout << std::endl << std::endl;
 
 			current_menu->CoutMenu();

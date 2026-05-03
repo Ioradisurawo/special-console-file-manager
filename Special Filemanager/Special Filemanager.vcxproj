@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -135,6 +135,7 @@
     <ClInclude Include="filemanager_base.h" />
     <ClInclude Include="filemanager_console.h" />
     <ClInclude Include="filemanager_special.h" />
+    <ClInclude Include="localization.h" />
     <ClInclude Include="menuItem_coloured.h" />
     <ClInclude Include="menu_coloured.h" />
     <ClInclude Include="menu_controller.h" />
@@ -145,6 +146,9 @@
     <ClCompile Include="filemanager_base.cpp" />
     <ClCompile Include="filemanager_console.cpp" />
     <ClCompile Include="filemanager_special.cpp" />
+    <ClCompile Include="language_select.cpp" />
+    <ClCompile Include="language_select.h" />
+    <ClCompile Include="localization.cpp" />
     <ClCompile Include="menuItem_coloured.cpp" />
     <ClCompile Include="menu_coloured.cpp" />
     <ClCompile Include="menu_controller.cpp" />

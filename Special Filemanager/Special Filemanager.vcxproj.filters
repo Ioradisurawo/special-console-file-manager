@@ -31,6 +31,12 @@
     <Filter Include="Файлы заголовков\Other">
       <UniqueIdentifier>{f3307aea-7812-4114-b937-e984f2a5845d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Language">
+      <UniqueIdentifier>{86bf89d2-0e67-42cb-91a7-c565bf123e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Language">
+      <UniqueIdentifier>{1736b857-caf1-46eb-b23a-abab1dfa6053}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="filemanager_base.h">
@@ -60,6 +66,9 @@
     <ClInclude Include="menuItem_coloured.h">
       <Filter>Файлы заголовков\Menu</Filter>
     </ClInclude>
+    <ClInclude Include="localization.h">
+      <Filter>Файлы заголовков\Language</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source.cpp">
@@ -88,6 +97,15 @@
     </ClCompile>
     <ClCompile Include="audio_player.cpp">
       <Filter>Исходные файлы\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="language_select.h">
+      <Filter>Файлы заголовков\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="language_select.cpp">
+      <Filter>Исходные файлы\Language</Filter>
+    </ClCompile>
+    <ClCompile Include="localization.cpp">
+      <Filter>Исходные файлы\Language</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
